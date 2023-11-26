@@ -1,0 +1,196 @@
+@startuml
+package Core {
+    class EnviarCorreos {
+        - emailFrom: String
+        - passwordFrom: String
+        - emailTo: String
+        - subject: String
+        - content: String
+        - nombreP: String
+        - codigo: int
+
+        + establecerCodigoVerificacion(nombre: String, codigo: int): void
+        + Correo(correo: String): void
+        - crearCorreo(emailPara: String): void
+        - EnviarCorreo(): void
+    }
+}
+package Core {
+    class Resultado {
+        - nickname: String
+        - puntuacion: int
+        - tiempof: int
+
+        + Resultado(nickname: String, puntuacion: int, tiempo: int)
+        + getNickname(): String
+        + setNickname(nickname: String): void
+        + getPuntuacion(): int
+        + setPuntuacion(puntuacion: int): void
+        + getTiempo(): int
+        + setTiempo(tiempo: int): void
+    }
+}
+package Core {
+    class Validaciones {
+        + esInt(x: String): boolean
+        + esDouble(x: String): boolean
+        + esFloat(x: String): boolean
+    }
+}
+
+
+package UI {
+    class Login {
+        - jtfnickname: JTextField
+        - jtfCode: JTextField
+        + main(args: String[]): void
+    }
+}
+
+package UI {
+    class Registro {
+        - jtfCedula: JTextField
+        - jtfNombre: JTextField
+        - jtfApellido: JTextField
+        - jtfEmail: JTextField
+        - jtfResidencia: JTextField
+        - jtfNickname: JTextField
+        - jcbdia: JComboBox
+        - jcbmes: JComboBox
+        - jcbyear: JComboBox
+        + Registro()
+        + comprobacionDB(): void
+    }
+}
+
+package UI {
+    class Resultados {
+      -jPanel1: JPanel
+      -titulo: JLabel
+      -jlblPuesto3: JLabel
+      -jlblPuesto1: JLabel
+      -jlblPuesto2: JLabel
+      -jtblRanking: JTable
+      -btnvolver: JButton
+      -jPanel2: JPanel
+      -jPanel3: JPanel
+      -jPanel4: JPanel
+      -jLabel1: JLabel
+      -jLabel2: JLabel
+      -jLabel3: JLabel
+      +Resultados()
+      +actualizarResultados(): void
+      +main(args: String[]): void
+    }
+}
+
+package Database {
+    class CConexion {
+        - conectar: Connection
+        - usuario: String
+        - contrasenia: String
+        - db: String
+        - ip: String
+        - puerto: String
+        - cadena: String
+
+        + establecerconexion(): Connection
+    }
+}
+
+package Database {
+    class Clogin {
+        - nombreP: String
+        - puntuaP: int
+        - tiempoF: int
+
+        + validarUsuario(String, int): void
+        + comprobarIntento(String): void
+        + registrarUsuarioNuevo(String, String, String, String, String, int, String, int, int, int): void
+        + verificarDatosNoRepetidos(String, String, int): boolean
+        + comprobacionCorreo(String): boolean
+        + nombre(String): void
+        + puntuacion(int): void
+        + tiempoFinal(int): void
+        + borrarArchivoTemporal(): void
+        + impresion(): void
+        + guardarResultadosSnake(String, int, int): void
+        + abandonojuego(String, int): void
+        + obtenerResultados(): ArrayList<Resultado>
+        + obtenerNicknamePuntuacionMasAlta(): String
+    }
+}
+
+package JuegoSnake {
+    class FrameJuego {
+        - obj: PanelDelJuego
+
+        + FrameJuego(login: Clogin)
+    }
+}
+
+package JuegoSnake {
+    class MenuPrincipal {
+        - jPanel1: JPanel
+        - jLabel1: JLabel
+        - btnIngresarAljuego: JButton
+        - btnAbandonar: JButton
+        - jLabel2: JLabel
+        - lblNombre: JLabel
+
+        + MenuPrincipal()
+        + void setNombreParticipante(nombre: String)
+        + static void main(args: String[])
+    }
+}
+
+package JuegoSnake {
+    class PanelDelJuego {
+        - SCREEN_WIDTH: int
+        - SCREEN_HEIGHT: int
+        - UNIT_SIZE: int
+        - GAME_UNITS: int
+        - DELAY: int
+        - x: int[]
+        - y: int[]
+        - bodyParts: int
+        - manzanasComidas: int
+        - manzanasX: int
+        - manzanasY: int
+        - direction: char
+        - running: boolean
+        - nombreJugador: String
+        - puntu: int
+        - tiempoTranscurrido: int
+        - tiempoJuego: Timer
+        - timer: Timer
+        - random: Random 
+
+        + PanelDelJuego(login: Clogin)
+        + inicioJuego(): void
+        + paintComponent(g: Graphics): void
+        + Dibujo(g: Graphics): void
+        + ManzanaN(): void
+        + movimientos(): void
+        + checkManzanas(): void
+        + checkChoques(): void
+        + pausarJuego(): void
+        + pasarManzanas(manzanas: int): void
+        + finJuego(g: Graphics): void
+        + actionPerformed(e: ActionEvent): void
+        + iniciarContadorTiempo(): void
+        + detenerContadorTiempo(): void
+        + class MyKeyAdapter
+        + keyPressed(e: KeyEvent): void
+    }
+}
+
+package JuegoSnake {
+    class Snake {
+        + main(args: String[]): void
+    }
+    class MenuPrincipal
+}
+
+@enduml
+
