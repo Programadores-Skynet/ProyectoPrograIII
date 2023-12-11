@@ -1,20 +1,27 @@
 package JuegoSnake;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import UI.Login;
-import database.Clogin;
+import database.Ccontrol;
 import javax.swing.JOptionPane;
 
 /**
- * @author Daniel Brenes & Fernando Delgado
+ * @authors Daniel Brenes & Fernando Delgado
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MenuPrincipal
-     */
     public MenuPrincipal() {
         initComponents();
 
+        /* Agregar WindowListener para que cuando la persona intente cerrar la ventana
+        intente cerrar la ventana con la X entonces le ponga la nota en 0 */
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cerrarVentana();
+            }
+        });
     }
 
     /**
@@ -97,33 +104,39 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarAljuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarAljuegoActionPerformed
-
+        //Obtiene el nombre de usuario desde la etiqueta lblNombre
         String nick = lblNombre.getText();
-        Clogin log = new Clogin();
-        log.nombre(nick);
-        new FrameJuego(log);
+        // Crea una instancia de la clase ccontrol y establece el nombre del jugador
+        Ccontrol control = new Ccontrol();
+        control.nombre(nick);
+        new FrameJuego(control);
         dispose();
     }//GEN-LAST:event_btnIngresarAljuegoActionPerformed
 
     private void btnAbandonarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbandonarActionPerformed
+        cerrarVentana();
+    }//GEN-LAST:event_btnAbandonarActionPerformed
 
-        Clogin login = new Clogin();
+    // Método para cerrar la ventana y ejecutar abandonarjuego
+    private void cerrarVentana() {
+
+        Ccontrol ccontrol = new Ccontrol();
         String nickname = lblNombre.getText();
-        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea detener abandonar el juego?\n" + "Se le pondra un 0 de puntuacion", "Confirmación", JOptionPane.YES_NO_OPTION);
-
+        //Muestra un cuadro de diálogo de confirmación
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea detener abandonar el juego?\n" + "Se le pondrá un 0 de puntuación", "Confirmación", JOptionPane.YES_NO_OPTION);
+        // Verifica si el usuario confirma abandonar el juego
         if (respuesta == JOptionPane.YES_OPTION) {
-            login.abandonojuego(nickname, PROPERTIES);
+            //Llama al metodo abandonarjuego y establece la puntuacion como 0
+            ccontrol.abandonojuego(nickname, PROPERTIES);
             Login loginU = new Login();
             dispose();
             loginU.show(true);
         }
+    }
 
-
-    }//GEN-LAST:event_btnAbandonarActionPerformed
-
+    //Establece el label del nombre con el nombre del participante
     public void setNombreParticipante(String nombre) {
         lblNombre.setText(nombre);
-
     }
 
     /**

@@ -1,20 +1,17 @@
 package UI;
 
 import Core.Resultado;
-import database.Clogin;
+import database.Ccontrol;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Fernando Delgado & Daniel Brenes
+ * @authors Fernando Delgado & Daniel Brenes
  */
 public class Resultados extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Resultados
-     */
     public Resultados() {
         initComponents();
         actualizarResultados();
@@ -223,32 +220,36 @@ public class Resultados extends javax.swing.JFrame {
         Login login = new Login();
         dispose();
         login.show(true);
+        login.cierreinscripcion();
     }//GEN-LAST:event_btnvolverActionPerformed
 
     public void actualizarResultados() {
-        Clogin clogin = new Clogin();
+        Ccontrol clogin = new Ccontrol();
 
-        // Obtener los resultados de la base de datos
+        //Obtiene los resultados de la base de datos
         ArrayList<Resultado> resultados = clogin.obtenerResultados();
 
-        // Ordenar los resultados por puntuación de manera descendente
+        //Filtra los resultados que tengan puntuación igual a -2
+        resultados.removeIf(resultado -> resultado.getPuntuacion() == -2);
+
+        //Ordena los resultados por puntuación de manera descendente
         Collections.sort(resultados, (r1, r2) -> Integer.compare(r2.getPuntuacion(), r1.getPuntuacion()));
 
         DefaultTableModel model = (DefaultTableModel) jtblRanking.getModel();
-        model.setRowCount(0); // Limpiar la tabla antes de agregar datos nuevos
+        model.setRowCount(0); //Limpiar la tabla antes de agregar datos nuevos
 
-        int puesto = 0; // Variable para controlar el podio
+        int puesto = 0; //Variable para controlar el podio
 
-        // Agregar los datos de los resultados a la tabla
+        //Agrega los datos de los resultados a la tabla
         for (Resultado resultado : resultados) {
             puesto++;
-            // Si la puntuación es -1, mostrar "En espera" en vez de la puntuación
+            //Si la puntuación es -1, escribe "En espera" en vez de la puntuación
             String puntuacion = (resultado.getPuntuacion() == -1) ? "En espera" : String.valueOf(resultado.getPuntuacion());
-            int tiempo = resultado.getTiempo(); // Obtener el tiempo del participante
+            int tiempo = resultado.getTiempo(); //Obtiene el tiempo del participante
             model.addRow(new Object[]{puesto, resultado.getNickname(), puntuacion, tiempo});
         }
 
-        // Mostrar los primeros tres puestos si hay suficientes registros
+        //Muestra los primeros tres puestos si hay suficientes registros
         if (puesto >= 1) {
             jlblPuesto1.setText(resultados.get(0).getNickname());
         } else {

@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Fernando Delgado & Daniel Brenes
+ * @authors Fernando Delgado & Daniel Brenes
  */
 public class Registro extends javax.swing.JFrame {
 
@@ -499,10 +499,12 @@ public class Registro extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jcbyearActionPerformed
 
+
     private void btnregistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregistroActionPerformed
+        //Validacion de la cedula ingresada en el campo de texto 'jtfCedula'
         Validaciones vali = new Validaciones();
         String cedulaR = jtfCedula.getText();
-
+        //Si la cédula es un número, invoca el método 'comprobacionDB' para realizar la comprobación en la base de datos.
         if (vali.esInt(cedulaR)) {
             comprobacionDB();
         } else {
@@ -517,6 +519,7 @@ public class Registro extends javax.swing.JFrame {
         login.show(true);
     }//GEN-LAST:event_btnvolverActionPerformed
 
+    //Muestra las condiciones para que el usuario participe en el torneo
     private void btnCondicionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCondicionesActionPerformed
         JOptionPane.showMessageDialog(null, "Al participar en este campeonato, aceptas los siguientes términos y condiciones: \n"
                 + "Edad Minima requerida:\n"
@@ -560,10 +563,12 @@ public class Registro extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jtfNicknameFocusLost
 
+    //Realiza una comprobacion de los datos ingresados en los campos de registro con los requerimientos de la base de datos.
     public void comprobacionDB() {
-        database.Clogin objetoLogin = new database.Clogin();
+        database.Ccontrol objetocontrol = new database.Ccontrol();
         Random random = new Random();
 
+        // Obtención de datos desde los campos de texto y selección
         String cedula = jtfCedula.getText();
         String nombre = jtfNombre.getText();
         String apellido = jtfApellido.getText();
@@ -574,11 +579,13 @@ public class Registro extends javax.swing.JFrame {
         String mes = (String) jcbmes.getSelectedItem();
         String anio = (String) jcbyear.getSelectedItem();
 
+        //Variables de valores numericos
         int diaS = 0;
         int anioS = 0;
         int cedulaS = 0;
         int codigoParticipacion = 0;
 
+        //Validacion de datos validos
         if (cedula.equals("Cedula") || nombre.equals("Nombre") || apellido.equals("Apellido") || email.equals("Email") || residencia.equals("Lugar de Residencia") || nickname.equals("Nickname")) {
             JOptionPane.showMessageDialog(null, "Ingrese datos válidos");
         } else {
@@ -588,13 +595,14 @@ public class Registro extends javax.swing.JFrame {
                 diaS = Integer.parseInt(dia);
                 anioS = Integer.parseInt(anio);
                 cedulaS = Integer.parseInt(cedula);
-                if (anioS <= 2005) {
+                if (anioS <= 2005) { //Comprobacion de la edad, si es mayor de 18 años entonces la persona puede participar 
                     codigoParticipacion = random.nextInt(9999) + 1; // Genera un número aleatorio entre 1 y 9999
-                    objetoLogin.registrarUsuarioNuevo(nickname, nombre, apellido, email, residencia, diaS, mes, anioS, cedulaS, codigoParticipacion);
+                    //Envio de los datos al metodo regisitrarUsuarioNuevo
+                    objetocontrol.registrarUsuarioNuevo(nickname, nombre, apellido, email, residencia, diaS, mes, anioS, cedulaS, codigoParticipacion);
                 } else {
                     JOptionPane.showMessageDialog(null, "El participante no cumple con la edad requerida para participar");
                     codigoParticipacion = 0;
-                    objetoLogin.registrarUsuarioNuevo(nickname, nombre, apellido, email, residencia, diaS, mes, anioS, cedulaS, codigoParticipacion);
+                    objetocontrol.registrarUsuarioNuevo(nickname, nombre, apellido, email, residencia, diaS, mes, anioS, cedulaS, codigoParticipacion);
                 }
             }
         }

@@ -3,7 +3,7 @@ package Core;
 
 /**
 *
-* @author Fernando Delgado & Daniel Brenes
+* @authors Fernando Delgado & Daniel Brenes
 */
 public class Resultado {
 
@@ -17,7 +17,7 @@ public class Resultado {
         this.tiempof = tiempo;
     }
 
-    // Getters y Setters (métodos para obtener y establecer los valores de los campos)
+    //Metodos para obtener y establecer los valores de los campos
     public String getNickname() {
         return nickname;
     }

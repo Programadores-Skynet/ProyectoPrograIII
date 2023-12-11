@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 public class EnviarCorreos {
 
-    // Variables para el correo electrónico del remitente, contraseña y detalles del correo.
+    //Variables para el correo del emisor, token y detalles del correo.
     private static String emailFrom = "testlabprogra@gmail.com";
     private static String passwordFrom = "rgpn yoqj mwql eaqs";
     private String emailTo;
@@ -19,31 +19,29 @@ public class EnviarCorreos {
     private String nombreP;
     private int codigo;
 
-    // Propiedades y configuraciones para la conexión SMTP.
+    //Propiedades y configuraciones para la conexión SMTP.
     private Properties mProperties;
     private Session mSession;
     private MimeMessage mCorreo;
 
-    // Método para establecer el código de verificación
+    //Método para establecer el código de verificación
     public void establecerCodigoVerificacion(String nombre, int codigo) {
         this.nombreP = nombre;
         this.codigo = codigo;
     }
-
+    
+    //Llama al metodo crear correo y enviar correo
     public void Correo(String correo) {
         mProperties = new Properties(); // Inicializar mProperties
         crearCorreo(correo);
         EnviarCorreo();
     }
 
-    /**
-     * Método para crear el contenido del correo electrónico.
-     */
+    //Método para crear el contenido del correo que va a ser enviado.
     private void crearCorreo(String emailPara) {
-        // Obtiene los datos ingresados en la interfaz.
+        //Obtiene los datos y los ordena para el formato del correo.
         emailTo = emailPara;
         subject = "Confirmación de inscripción al torneo";
-        System.out.print("Code" + codigo);
         if (codigo != 0) {
             content = "Estimado/a " + nombreP + ".\n "
                     + " ¡Gracias por inscribirte en nuestro torneo! Esperamos que te encuentres bien. "
@@ -55,7 +53,9 @@ public class EnviarCorreos {
             content = "Estimado/a " + nombreP + ". "
                     + " ¡Gracias por inscribirte en nuestro torneo! Esperamos que te encuentres bien. "
                     + " Tu inscripción se ha realizado con éxito, te queremos contar que por politicas del campeonato, "
-                    + "el usuario no puede participar en el torneo actual, pero queda registrado para un proximo torneo. ";
+                    + "el usuario no puede participar en el torneo actual, pero queda registrado para un proximo torneo. "
+                    + ".   Si tienes alguna pregunta o necesitas más información, no dudes en contactarnos. ¡Nos vemos en el torneo! "
+                    + " Atentamente, Fernando Delgado & Daniel Brenes ";
         }
         // Configura las propiedades para el envío SMTP a través de Gmail.
         mProperties.put("mail.smtp.host", "smtp.gmail.com");
@@ -68,7 +68,7 @@ public class EnviarCorreos {
         mSession = Session.getDefaultInstance(mProperties);
 
         try {
-            // Crea un nuevo mensaje de correo electrónico.
+            //Crea un nuevo mensaje de correo electrónico.
             mCorreo = new MimeMessage(mSession);
             mCorreo.setFrom(new InternetAddress(emailFrom));
             mCorreo.setRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
@@ -79,9 +79,7 @@ public class EnviarCorreos {
         }
     }
 
-    /**
-     * Método para enviar el correo electrónico.
-     */
+    //Método para enviar el correo electrónico.
     private void EnviarCorreo() {
         try {
             Transport mTransport = mSession.getTransport("smtp");

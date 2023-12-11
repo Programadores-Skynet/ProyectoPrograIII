@@ -1,6 +1,8 @@
 package database;
 
 import Core.EnviarCorreos;
+import Core.GestionTorneo;
+import Core.ListaDoble;
 import Core.Resultado;
 import JuegoSnake.MenuPrincipal;
 import UI.Login;
@@ -19,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
-public class Clogin {
+public class Ccontrol {
 
     //Variables privadas para el uso global
     private String nombreP;
@@ -54,8 +56,6 @@ public class Clogin {
             } else {
                 // Si no se encuentra un usuario, mostrar un mensaje de usuario incorrecto
                 JOptionPane.showMessageDialog(null, "El usuario es incorrecto, vuelva a intentar");
-                Login login = new Login();
-                login.show(true);
             }
         } catch (SQLException e) {
             // En caso de error en la base de datos, mostrar un mensaje de error
@@ -80,6 +80,7 @@ public class Clogin {
     }
 
     public void comprobarIntento(String nickname) {
+        Login login = new Login();
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -87,6 +88,7 @@ public class Clogin {
         try {
             CConexion objetoCConexion = new CConexion();
             connection = objetoCConexion.establecerconexion();
+            GestionTorneo gestionTorneo = new GestionTorneo(); // Instancia de la clase GestionTorneo
 
             String consulta = "SELECT puntuacion_final FROM participaciones WHERE nickname = ?";
             ps = connection.prepareStatement(consulta);
@@ -97,25 +99,35 @@ public class Clogin {
                 int puntuacion = rs.getInt("puntuacion_final");
                 if (puntuacion == -1) {
                     JOptionPane.showMessageDialog(null, "El usuario puede participar");
-                    // Abrir el menú principal
-                    MenuPrincipal menu = new MenuPrincipal();
-                    menu.setNombreParticipante(nickname);
-                    menu.show(true);
+
+                    // Verificar si el nickname está en la lista y eliminarlo si está presente
+                    boolean nombreEnOrden = gestionTorneo.verificarNombre(nickname);
+
+                    if (nombreEnOrden) {
+                        JOptionPane.showMessageDialog(null, "El usuario está en el orden para participar");
+                        // Abre el menú principal
+                        MenuPrincipal menu = new MenuPrincipal();
+                        menu.setNombreParticipante(nickname);
+                        menu.show(true);
+                    } else {
+                        // Si el nombre no está en la lista
+                        JOptionPane.showMessageDialog(null, "El usuario no está en el orden para participar");
+                        login.show(true);
+                    }
 
                 } else {
                     JOptionPane.showMessageDialog(null, "El usuario ya ha participado");
-                    Login login = new Login();
                     login.show(true);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Usuario no encontrado");
-                Login login = new Login();
                 login.show(true);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+            login.show(true);
+
         } finally {
-            // Cerrar recursos
             try {
                 // Cerrar los recursos de base de datos en un bloque finally
                 if (rs != null) {
@@ -138,6 +150,7 @@ public class Clogin {
      * ***************************************************************
      */
     //Metodos para registro de usuario
+    
     public void registrarUsuarioNuevo(String nickname, String nombre, String apellido, String email, String residencia, int dia, String mes, int anio, int cedula, int codigoP) {
         // Verificar el formato del correo antes de proceder
         if (comprobacionCorreo(email) && verificarDatosNoRepetidos(nickname, email, cedula)) {
@@ -188,8 +201,13 @@ public class Clogin {
                         correo.establecerCodigoVerificacion(nombre, codigoP);
                         correo.Correo(email);
 
+                        //Metodo de las listas
+                        ListaDoble lista = new ListaDoble();
+                        if (codigoP != 0) { //Si la persona tiene codigo 0 entonces no se agrega a la lista de participantes
+                            lista.agregar(nickname);
+                        }
                     } else {
-                        // Si no se insertó correctamente en la tabla "usuarios", mostrar un mensaje de error
+                        // Si no se insertó correctamente en la tabla "usuarios", muestra un mensaje de error
                         JOptionPane.showMessageDialog(null, "Error al registrar el usuario en la tabla 'usuarios'");
                     }
                 } else {
@@ -304,7 +322,8 @@ public class Clogin {
     /**
      * ***************************************************************
      */
-    //Metodo para asignacion de puntuacion
+    //Metodos para asignacion de puntuacion y tiempo
+    
     public void nombre(String nombre) {
         this.nombreP = nombre;
         System.out.println(nombreP); // Este print es opcional, puedes quitarlo si no es necesario
@@ -483,6 +502,7 @@ public class Clogin {
      * ***************************************************************
      */
     //Metodos para asignar los puestos de resultados
+    
     public ArrayList<Resultado> obtenerResultados() {
         ArrayList<Resultado> resultados = new ArrayList<>();
 
@@ -507,6 +527,8 @@ public class Clogin {
             ps.close();
             connection.close();
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
+
         }
 
         return resultados;
@@ -531,7 +553,7 @@ public class Clogin {
             ps.close();
             connection.close();
         } catch (SQLException e) {
-            // Manejo de excepciones
+            JOptionPane.showMessageDialog(null, e);
         }
 
         return nicknamePuntuacionMasAlta;

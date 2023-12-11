@@ -1,20 +1,19 @@
 package UI;
 
+import Core.GestionTorneo;
 import Core.Validaciones;
-import database.Clogin;
+import database.Ccontrol;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author Fernando Delgado & Daniel Brenes
+ * @authors Fernando Delgado & Daniel Brenes
  */
 public class Login extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Login
-     */
     public Login() {
         initComponents();
+
     }
 
     /**
@@ -34,6 +33,7 @@ public class Login extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         btnResultados1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        btnCerrarRegistros = new javax.swing.JButton();
         jtfnickname = new javax.swing.JTextField();
         jSeparator7 = new javax.swing.JSeparator();
         jtfCode = new javax.swing.JTextField();
@@ -89,6 +89,7 @@ public class Login extends javax.swing.JFrame {
         btnResultados1.setText("Ver Resultados Actuales");
         btnResultados1.setBorder(null);
         btnResultados1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnResultados1.setEnabled(false);
         btnResultados1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResultados1ActionPerformed(evt);
@@ -98,6 +99,18 @@ public class Login extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/trofeo.png"))); // NOI18N
         jPanel4.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 240, -1));
+
+        btnCerrarRegistros.setBackground(new java.awt.Color(204, 0, 0));
+        btnCerrarRegistros.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCerrarRegistros.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarRegistros.setText("Cerrar Inscripciones");
+        btnCerrarRegistros.setBorder(null);
+        btnCerrarRegistros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarRegistrosActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnCerrarRegistros, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 360, 170, 20));
 
         jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 0, 250, 400));
 
@@ -216,7 +229,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResultadosActionPerformed
 
     private void btnResultados1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResultados1ActionPerformed
-
+        //Creacion de un objeto de la clase Resultados
         Resultados resul = new Resultados();
         dispose();
         resul.show(true);
@@ -246,7 +259,6 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jtfCodeFocusLost
 
     private void jtfCodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtfCodeMouseClicked
-        // TODO add your handling code here:
         if (jtfCode.getText().equals("") || jtfCode.getText().equals("Codigo de ingreso")) {
             jtfCode.setText("");
         }
@@ -256,7 +268,6 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jtfCodeMouseClicked
 
     private void jtfCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtfCodeMousePressed
-        // TODO add your handling code here:
         if (jtfCode.getText().equals("") || jtfCode.getText().equals("Codigo de ingreso")) {
             jtfCode.setText("");
         }
@@ -271,12 +282,14 @@ public class Login extends javax.swing.JFrame {
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
         Registro registro = new Registro();
+        //Cierra la ventana actual y abre la de registro
         dispose();
         registro.show();
     }//GEN-LAST:event_btnRegistroActionPerformed
 
     private void btnvolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolverActionPerformed
         dispose();
+        //Cierra el Login y envia un mensaje de despedida
         JOptionPane.showMessageDialog(null, "Gracias por usar el programa");
     }//GEN-LAST:event_btnvolverActionPerformed
 
@@ -285,11 +298,15 @@ public class Login extends javax.swing.JFrame {
         String nickname = jtfnickname.getText();
         String codigoA = jtfCode.getText();;
 
-        Clogin login = new Clogin();
+        //Creacion de la instancia para la clase de Ccontrol y validaciones
+        Ccontrol ccontrol = new Ccontrol();
         Validaciones vali = new Validaciones();
+        //Valida si el texto ingresado en jtfCode es un numero entero
         if (vali.esInt(codigoA)) {
+            //Convierte el numero a un int
             int codigoAcceso = Integer.parseInt(codigoA);
-            login.validarUsuario(nickname, codigoAcceso);
+            //Envio de los datos a la clase ccontrol
+            ccontrol.validarUsuario(nickname, codigoAcceso);
             dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Por favor ingrese el codigo de acceso unicamente con numeros");
@@ -298,10 +315,31 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        //Creditos
         JOptionPane.showMessageDialog(null, "Programa creado por Fernando Delgado & Daniel Brenes \n"
                 + "Para la clase de Programacion III (Universidad Latina de Costa Rica)\n"
                 + "San Jose, Costa Rica, 2023");
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void btnCerrarRegistrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarRegistrosActionPerformed
+        String codigocierre = JOptionPane.showInputDialog("Por favor ingrese el código de administrador");
+        if (codigocierre == null) {
+            //Si presiona cancelar entonces que no haga nada
+            return;
+        }
+        if (codigocierre.equals("4875")) {
+            cierreinscripcion();
+        } else {
+            JOptionPane.showMessageDialog(null, "El codigo de administrador es incorrecto");
+        }
+    }//GEN-LAST:event_btnCerrarRegistrosActionPerformed
+
+    //Metodo que oculta los botones 
+    public void cierreinscripcion() {
+        btnCerrarRegistros.setVisible(false);
+        btnRegistro.setEnabled(false);
+        btnResultados1.setEnabled(true);
+    }
 
     /**
      * @param args the command line arguments
@@ -339,6 +377,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrarRegistros;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnRegistro;
     private javax.swing.JButton btnResultados;
