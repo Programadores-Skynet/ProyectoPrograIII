@@ -6,7 +6,6 @@ import UI.Login;
 //Github FernandoDelgadoC: https://github.com/FernandoDelgadoC 
 //Github dbrenes04: https://github.com/dbrenes04
 
-//Proceso principal
 public class Main {
     //Inicio del programa
     public static void main(String[] args) {
